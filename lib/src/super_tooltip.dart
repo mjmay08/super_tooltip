@@ -325,6 +325,9 @@ class SuperTooltip extends StatefulWidget {
   /// Defaults to `false`.
   final bool clickThrough;
 
+  // MJM: allow to correctly scale height in InteractiveViewer
+  final double yScale;
+
   SuperTooltip({
     Key? key,
     required this.content,
@@ -399,6 +402,7 @@ class SuperTooltip extends StatefulWidget {
     this.showOnTap = true,
     this.boxShadows,
     this.clickThrough = false,
+    this.yScale = 1,
   })  : assert(showDropBoxFilter ? showBarrier ?? false : true,
             'showDropBoxFilter or showBarrier can\'t be false | null'),
         super(key: key);
@@ -555,7 +559,9 @@ class _SuperTooltipState extends State<SuperTooltip>
     final size = renderBox.size;
 
     // Calculate the target position relative to the global coordinate system.
-    final target = renderBox.localToGlobal(size.center(Offset.zero));
+    var target = renderBox.localToGlobal(size.center(Offset.zero));
+    // MJM
+    target = target.scale(1, 1 / widget.yScale);
     final animation = CurvedAnimation(
       parent: _animationController,
       curve: Curves.fastOutSlowIn,
